@@ -1,4 +1,4 @@
-OSPM: An "Operating System Pacakage Manager".
+#+TITLE: OSPM: An "Operating System Pacakage Manager"
 
 Inspired by https://github.com/emacs-helm/helm-system-packages.
 
@@ -6,7 +6,7 @@ Supported package managers:
 
 - [[https://guix.gnu.org][Guix]]
 
-It provides an =os-package= class with subclsses which specialize for various
+It provides an =os-package= class with subclasses which specialize for various
 package managers.
 
 If the package manager supports it, the class also includes the list of

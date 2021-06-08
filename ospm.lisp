@@ -5,7 +5,7 @@
 
 ;; TODO: Add more typing.
 
-(define-class manager ()
+(defclass* manager ()
   ((path ""
          :type (or string pathname))
    (manifest-directory (uiop:xdg-data-home "manifests")
@@ -18,13 +18,13 @@
 
 Example:
 
-  (define-class my-guix-manager (ospm:guix-manager)
+  (defclass* my-guix-manager (ospm:guix-manager)
     ((ospm:manifest-directory \"/home/doe/.package-lists\")))
   (pushnew 'my-guix-manager ospm:*supported-managers*)
   ;; Ensure your new manager is set (only necessary if OSPM was already used):
   (setf ospm:*manager* nil)"))
 
-(define-class os-package ()
+(defclass* os-package ()
   ((name "")
    (version "")
    (dependencies '())
@@ -35,7 +35,7 @@ Example:
   (:export-accessor-names-p t)
   (:accessor-name-transformer (hu.dwim.defclass-star:make-name-transformer name)))
 
-(define-class os-package-output ()
+(defclass* os-package-output ()
   ((name "")
    (parent-package nil
                    :type (or null os-package))
@@ -48,7 +48,7 @@ Example:
   (:documentation "OS package outputs are meaningful mostly for functional
 package managers like Nix or Guix."))
 
-(define-class os-generation ()
+(defclass* os-generation ()
   ((id 0)
    (current? nil)
    (package-count 0)

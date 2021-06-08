@@ -3,12 +3,12 @@
 
 (in-package :ospm)
 
-(define-class guix-manager (manager)
+(defclass* guix-manager (manager)
   ((path "guix"
          :type (or string pathname)))
   (:export-class-name-p t))
 
-(define-class guix-package-output (os-package-output)
+(defclass* guix-package-output (os-package-output)
   ((parent-package nil
                    :type (or null guix-package))
    (path ""
@@ -131,7 +131,7 @@ value.
          ;; Error, or unexpected REPL result formatting.
          (values nil repl-result))))))
 
-(define-class guix-package (os-package)
+(defclass* guix-package (os-package)
   ((outputs '())
    (supported-systems '())
    (inputs '())

@@ -6,7 +6,7 @@
 (prove:plan nil)
 
 (defvar *test-package-name* "hello")
-(defvar *test-complex-package-name* "nyxt")
+(defvar *test-complex-package-name* "sbcl")
 (defvar *test-multi-version-package-name* "linux-libre")
 
 (prove:subtest "Package list"

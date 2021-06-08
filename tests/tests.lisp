@@ -4,7 +4,7 @@
 (in-package :ospm/tests)
 
 (defvar *current-directory* (asdf:system-relative-pathname
-                             (asdf:find-system :nyxt/ospm) "libraries/ospm/tests/"))
+                             (asdf:find-system :ospm) "tests/"))
 
 (when (ospm:manager)
   (prove:run (uiop:resolve-absolute-location

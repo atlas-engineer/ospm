@@ -1,4 +1,4 @@
-#+TITLE: OSPM: An "Operating System Pacakage Manager"
+#+TITLE: OSPM: An "Operating System Package Manager"
 
 *Status:* Experimental.
 

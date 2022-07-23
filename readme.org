@@ -1,5 +1,7 @@
 #+TITLE: OSPM: An "Operating System Pacakage Manager"
 
+*Status:* Experimental.
+
 Inspired by https://github.com/emacs-helm/helm-system-packages.
 
 Supported package managers:

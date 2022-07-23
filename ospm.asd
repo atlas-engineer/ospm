@@ -26,8 +26,11 @@
   :in-order-to ((test-op (test-op "ospm/tests"))))
 
 (defsystem "ospm/tests"
-  :depends-on (ospm prove)
-  :components ((:file "test-package"))
+  :depends-on (ospm lisp-unit2)
+  :pathname "tests/"
+  :components ((:file "package")
+               (:file "test-generic")
+               (:file "test-functional"))
   :perform (test-op (op c)
-                    (funcall (read-from-string "prove:run")
-                             (system-relative-pathname c "tests/tests.lisp"))))
+                    (symbol-call :lisp-unit2 :run-tests :package :ospm/tests
+                                 :run-contexts (find-symbol "WITH-SUMMARY-CONTEXT" :lisp-unit2))))

@@ -56,6 +56,8 @@ For each inputs on `%guix-listener-channel' a result is returned on
   ;; Guix REPL automatically terminates when it reads EOF in the input stream,
   ;; which happens when the parent Lisp process dies.
   (flet ((start-guix ()
+           (log:info "Starting Guix server: ~s"
+                     (serapeum:resolve-executable *guix-program*))
            (let ((guix-process
                    (uiop:launch-program `(,*guix-program* "repl" "--type=machine")
                                         :input :stream :output :stream)))
@@ -94,7 +96,8 @@ value.
   (unless (and %guix-listener-channel %guix-result-channel)
     (setf %guix-listener-channel (make-instance 'calispel:channel))
     (setf %guix-result-channel (make-instance 'calispel:channel))
-    (bt:make-thread #'guix-listener))
+    (bt:make-thread #'guix-listener
+                    :name "Guix listener"))
   ;; Need to be in this package to avoid prefixing symbols with current package.
   (let* ((*package* (find-package :ospm))
          (*print-case* :downcase)

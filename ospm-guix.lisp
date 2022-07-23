@@ -271,7 +271,7 @@ value.
                                 :date (local-time:parse-timestring date)
                                 :path path))
 
-(defun read-link (path)
+(defun read-link (path) ; TODO: Rename to `truenamize-1'?  Consistent with `macroexpand-1'.
   "Resolve PATH symlink once."
   #+sbcl
   (sb-posix:readlink path)

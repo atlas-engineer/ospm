@@ -8,14 +8,12 @@
   :license "BSD 3-Clause"
   :depends-on (alexandria
                calispel
-               cl-ppcre
                hu.dwim.defclass-star    ; Latest version required.
                local-time
                named-readtables
                #-sbcl
                osicat
                serapeum
-               str
                trivia)
   :serial t
   :components ((:file "package")

@@ -38,10 +38,10 @@ package managers like Nix or Guix."))
 
 (declaim (ftype (function (t) string)))
 (defun cl->scheme-syntax (form)
-  (str:replace-all
-   ;; Backslashes in Common Lisp are doubled, unlike Guile.
-   "\\\\" "\\"
-   (write-to-string form)))
+  (serapeum:string-replace-all
+   "\\\\"
+   (write-to-string form)
+   "\\"))
 
 (defvar *guix-program* "guix"
   "Name or path to the `guix' executable.")
@@ -256,8 +256,7 @@ value.
   (alexandria:mappend #'outputs (list-packages)))
 
 (defmethod manager-list-profiles ((manager guix-manager) &key include-manager-p)
-  (let ((all-profiles (str:split
-                       (string #\newline)
+  (let ((all-profiles (serapeum:lines
                        (uiop:run-program
                         (list (path manager) "package" "--list-profiles")
                         :output '(:string :stripped t)))))
@@ -306,7 +305,7 @@ for non-standard profiles."
   (run (append (list (path manager) "package"
                      (format nil "--switch-generation=~a" (id generation)))
                (when profile
-                 (list (str:concat "--profile=" (namestring profile)))))))
+                 (list (uiop:strcat "--profile=" (namestring profile)))))))
 
 (defmethod manager-delete-generations ((manager guix-manager) generations
                                        &optional profile)
@@ -314,7 +313,7 @@ for non-standard profiles."
                      (format nil "--delete-generations=~{~a~^,~}"
                              (mapcar #'id generations)))
                (when profile
-                 (list (str:concat "--profile=" (namestring profile)))))))
+                 (list (uiop:strcat "--profile=" (namestring profile)))))))
 
 (defmethod refresh ((manager guix-manager)) ; TODO: Unused?
   (declare (ignore manager))
@@ -337,13 +336,13 @@ for non-standard profiles."
                                    (name output))))
                        package-or-output-list)
                (when profile
-                 (list (str:concat "--profile=" (namestring profile)))))))
+                 (list (uiop:strcat "--profile=" (namestring profile)))))))
 
 (defmethod manager-install-manifest ((manager guix-manager) manifest &optional profile)
   (run (append (list (path manager) "package"
-                     (str:concat "--manifest=" (namestring manifest)))
+                     (uiop:strcat "--manifest=" (namestring manifest)))
                (when profile
-                 (list (str:concat "--profile=" (namestring profile)))))))
+                 (list (uiop:strcat "--profile=" (namestring profile)))))))
 
 (defmethod manager-uninstall ((manager guix-manager) package-output-list &optional profile)
   (run (append (uninstall-command manager profile)
@@ -356,7 +355,7 @@ for non-standard profiles."
 (defmethod uninstall-command ((manager guix-manager) profile)
   (append (list (path manager) "remove")
           (when profile
-            (list (str:concat "--profile=" (namestring profile))))))
+            (list (uiop:strcat "--profile=" (namestring profile))))))
 
 (defmethod manager-list-files ((manager guix-manager) outputs)
   (alexandria:mappend

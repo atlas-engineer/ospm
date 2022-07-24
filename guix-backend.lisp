@@ -37,31 +37,37 @@ Otherwise execute the EXPR argument normally.")
       result)))
 
 (defvar %make-package
-  '(lambda (package)
-    (let ((loc (package-location package))
-          (inputs->names (lambda (inputs)
-                           (map package-name
-                                ;; Input may be an `origin', not necessarily a package.
-                                (filter package? (map cadr inputs))))))
-      (list
-       (package-name package)
+  ;; TODO: Protect against errors but add test to detect them.
+  `(lambda (package)
+     ,%define-with-protect
+     (let ((loc (package-location package))
+           (inputs->names (lambda (inputs)
+                            (map package-name
+                                 ;; Input may be an `origin', not necessarily a package.
+                                 (filter package? (map cadr inputs))))))
        (list
-        #:version (package-version package)
-        #:outputs (package-outputs package)
-        #:supported-systems (package-supported-systems package)
+        (package-name package)
+        (let ((args (list
+                     #:version (package-version package)
+                     #:outputs (package-outputs package)
+                     #:supported-systems (package-supported-systems package)
 
-        #:inputs (inputs->names (package-inputs package))
-        #:propagated-inputs (inputs->names (package-propagated-inputs package))
-        #:native-inputs (inputs->names (package-native-inputs package))
-        #:location (string-join (list (location-file loc)
-                                      (number->string (location-line loc))
-                                      (number->string (location-column loc)))
-                                ":")
-        ;; In Guix, an empty home-page is #f, but we want a string.
-        #:home-page (or (package-home-page package) "")
-        #:licenses (map license-name (ensure-list (package-license package)))
-        #:synopsis (package-synopsis package)
-        #:description (string-replace-substring (package-description package) "\\n" " "))))))
+                     #:inputs (inputs->names (package-inputs package))
+                     #:propagated-inputs (inputs->names (package-propagated-inputs package))
+                     #:native-inputs (inputs->names (package-native-inputs package))
+                     #:location (with-protect
+                                    (string-join (list (location-file loc)
+                                                       (number->string (location-line loc))
+                                                       (number->string (location-column loc)))
+                                                 ":"))
+                     ;; In Guix, an empty home-page is #f, but we want a string.
+                     #:home-page (or (package-home-page package) "")
+                     #:licenses (with-protect (map license-name (ensure-list (package-license package))))
+                     #:synopsis (package-synopsis package)
+                     #:description (string-replace-substring (package-description package) "\\n" " "))))
+          (if (equal? args "")
+              (list)
+              args))))))
 
 (defvar %make-output
   '(lambda (entry)

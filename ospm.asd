@@ -27,9 +27,8 @@
 (defsystem "ospm/tests"
   :depends-on (ospm lisp-unit2)
   :pathname "tests/"
-  :components ((:file "package")
-               (:file "test-generic")
-               (:file "test-functional"))
+  :components ((:file "tests")
+               (:file "functional"))
   :perform (test-op (op c)
                     (symbol-call :lisp-unit2 :run-tests :package :ospm/tests
                                  :run-contexts (find-symbol "WITH-SUMMARY-CONTEXT" :lisp-unit2))))

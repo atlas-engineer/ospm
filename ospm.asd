@@ -2,7 +2,7 @@
 ;;;; SPDX-License-Identifier: BSD-3-Clause
 
 (defsystem "ospm"
-  :version "0.0.0"
+  :version "0.0.1"
   :author "Atlas Engineer LLC"
   :description "OS package manager interface"
   :license "BSD 3-Clause"

@@ -10,6 +10,7 @@
                calispel
                hu.dwim.defclass-star    ; Latest version required.
                local-time
+               moptilities
                named-readtables
                #-sbcl
                osicat

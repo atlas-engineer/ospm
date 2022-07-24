@@ -80,12 +80,14 @@ For each inputs on `%guix-listener-channel' a result is returned on
           ;; Use `read-line' to ensure we empty the output stream.
           ;; `read' errors could leave a truncated s-expression behind
           ;; which would prefix the next evaluation result.
-          ;; TODO: Report read errors.
           (calispel:! %guix-result-channel
-                      (ignore-errors
-                       (let ((*readtable* (named-readtables:ensure-readtable
-                                           'scheme-reader-syntax)))
-                         (read-from-string output)))))))))
+                      (handler-case
+                          (let ((*readtable* (named-readtables:ensure-readtable
+                                              'scheme-reader-syntax)))
+                            (read-from-string output))
+                        ;; TODO: Define own condition.
+                        (error (c)
+                          (list c input output)))))))))
 
 (defun guix-eval (form &rest more-forms)
   "Evaluate forms in Guix REPL.
@@ -130,9 +132,9 @@ value.
                            ;; (values nil other)
                            other))
                         values)))
-        (_
-         ;; Error, or unexpected REPL result formatting.
-         (values nil repl-result))))))
+        ((list condition input output)
+         (error "On input~%~T~s~%Guix server returned~%~T~s~%which failed to be read: ~a"
+                input output condition))))))
 
 (defclass* guix-package (os-package)
   ((outputs '())

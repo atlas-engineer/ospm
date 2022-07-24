@@ -60,8 +60,9 @@ For each inputs on `%guix-listener-channel' a result is returned on
   ;; Guix REPL automatically terminates when it reads EOF in the input stream,
   ;; which happens when the parent Lisp process dies.
   (flet ((start-guix ()
-           (log:info "Starting Guix server: ~s"
-                     (serapeum:resolve-executable *guix-program*))
+           ;; TODO: Use `log4cl'?
+           (format t "; Starting Guix server: ~s"
+                   (serapeum:resolve-executable *guix-program*))
            (let ((guix-process
                    (uiop:launch-program `(,*guix-program* "repl" "--type=machine")
                                         :input :stream :output :stream)))

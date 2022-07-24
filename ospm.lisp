@@ -35,6 +35,10 @@ Example:
   (:export-accessor-names-p t)
   (:accessor-name-transformer (hu.dwim.defclass-star:make-name-transformer name)))
 
+(defmethod print-object ((object os-package) stream)
+  (print-unreadable-object (object stream :type t :identity t)
+    (format stream "~a@~a" (name object) (version object))))
+
 (defclass* os-package-output ()
   ((name "")
    (parent-package nil

@@ -38,6 +38,7 @@ package managers like Nix or Guix."))
 
 (declaim (ftype (function (t) string)))
 (defun cl->scheme-syntax (form)
+  "Last-minute formatting of the FORM before sending to the Guix REPL."
   (serapeum:string-replace-all
    "\\\\"
    (write-to-string form)
@@ -48,6 +49,9 @@ package managers like Nix or Guix."))
 
 (defvar %guix-listener-channel nil)
 (defvar %guix-result-channel nil)
+
+(defvar *debug-on-error* nil
+  "See `%define-with-protect' for how this can be used.")
 
 (defun guix-listener ()
   "Start the Guix REPL and listen to `%guix-listener-channel'.
@@ -68,6 +72,14 @@ For each inputs on `%guix-listener-channel' a result is returned on
              guix-process)))
     (do ((guix-process (start-guix))) (nil)
       (let ((input (calispel:? %guix-listener-channel)))
+        ;; First thing: ensure `*debug-on-error*' is defined.
+        (format (uiop:process-info-input guix-process)
+                "(define *debug-on-error* ~a)~%"
+                (if *debug-on-error* "#t" "#f"))
+        (finish-output (uiop:process-info-input guix-process))
+        ;; Skip unspecified result
+        (read-line (uiop:process-info-output guix-process) nil :eof)
+
         ;; Append a newline to tell the REPL to evaluate the input:
         (format (uiop:process-info-input guix-process) "~a~%" input)
         (finish-output (uiop:process-info-input guix-process))
@@ -80,6 +92,7 @@ For each inputs on `%guix-listener-channel' a result is returned on
           ;; Use `read-line' to ensure we empty the output stream.
           ;; `read' errors could leave a truncated s-expression behind
           ;; which would prefix the next evaluation result.
+          ;; TODO: Parse s-exp for `non-self-quoting' forms.
           (calispel:! %guix-result-channel
                       (handler-case
                           (let ((*readtable* (named-readtables:ensure-readtable
@@ -134,7 +147,10 @@ value.
                         values)))
         ((list condition input output)
          (error "On input~%~T~s~%Guix server returned~%~T~s~%which failed to be read: ~a"
-                input output condition))))))
+                input output condition))
+        (_
+         (error "Guix server abnormal output:~%~s"
+                repl-result))))))
 
 (defclass* guix-package (os-package)
   ((outputs '())

@@ -10,6 +10,16 @@
 
 ;; TODO: With CCL keywords cannot have the same name as interned symbols.
 
+(defvar %define-with-protect
+  '(define-syntax with-protect
+    (syntax-rules (list)
+     ((with-protect expr)
+      (if *debug-on-error*
+          (begin expr)
+          (or (false-if-exception (begin expr)) "")))))
+  "If `*debug-on-error*' is nil, return \"\".
+Otherwise execute the EXPR argument normally.")
+
 (defvar %find-package
   ;; TODO: Use upstream's way to find packages.
   '(lambda* (name #:optional version)

@@ -57,10 +57,9 @@
                                                   :version *test-package-with-versions-version*)))
                                     *test-profile*)))
     (uiop:wait-process process-info)
-    ;; FIXME
-    ;; (assert-equal *test-package-with-versions-version*
-    ;;               (ospm:version (ospm:parent-package
-    ;;                              (first (ospm:list-packages *test-profile*)))))
+    (assert-equal *test-package-with-versions-version*
+                  (ospm:version (ospm:parent-package
+                                 (first (ospm:list-packages *test-profile*)))))
     ;; TODO: Delete *test-profile* afterwards?
     ))
 

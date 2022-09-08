@@ -40,7 +40,7 @@
   ;; SBCL seems OK without special #\: treatment, but not CCL.
   ;; uninterning does not work as it would break with:
   ;;   (let ((location 'foo)) (list #:location location))
-  #+ccl
+  #+(or ecl ccl)
   (:dispatch-macro-char #\# #\: #'(lambda (stream char1 char2)
                                     (declare (ignore char1 char2))
                                     ;; (make-instance 'scheme-keyword :sym )

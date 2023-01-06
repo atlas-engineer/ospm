@@ -49,6 +49,16 @@ Otherwise execute the EXPR argument normally.")
         (package-name package)
         (let ((args (list
                      #:version (package-version package)
+                     #:source (let ((uri (when (and (package-source package)
+                                                    (origin? (package-source package)))
+                                           (origin-uri (package-source package)))))
+                                (cond
+                                  ((git-reference? uri)
+                                   `(guix-package-source-git-reference
+                                     :url ,(git-reference-url uri)
+                                     :commit ,(git-reference-commit uri)
+                                     :recursive-p ,(git-reference-recursive? uri)))
+                                  (else #f)))
                      #:outputs (package-outputs package)
                      #:supported-systems (package-supported-systems package)
 
@@ -139,7 +149,11 @@ just-in-time instead."
      (guix licenses)
      (guix utils)
      (guix build utils)                 ; For `string-replace-substring'.
-     (gnu packages))
+     (gnu packages)
+     (gnu packages lisp-xyz)
+
+     ;; TODO: Support other origin types.
+     (guix git-download))
 
    '(define (ensure-list l)
      (if (list? l)

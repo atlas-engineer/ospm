@@ -154,7 +154,10 @@ value.
                 repl-result))))))
 
 (defclass* guix-package (os-package)
-  ((outputs '())
+  ((source
+    nil
+    :type t)
+   (outputs '())
    (supported-systems '())
    (inputs '())
    (propagated-inputs '())
@@ -194,6 +197,13 @@ value.
           (package-output-size (path output))))
   (slot-value output 'size))
 
+(defclass* guix-package-source-git-reference () ; TODO: Better name?
+  ((url "")
+   (commit "")
+   (recursive-p nil))
+  (:export-accessor-names-p t)
+  (:accessor-name-transformer (hu.dwim.defclass-star:make-name-transformer name)))
+
 (defun make-guix-package (entry)
   (let* ((name (first entry))
          (properties (second entry))
@@ -210,6 +220,9 @@ value.
                                                        :name output-name
                                                        :parent-package result))
                   (getf properties :outputs)))
+    (when (getf properties :source)
+      (setf (source result)
+            (apply #'make-instance (getf properties :source))))
     result))
 
 (defun copy-object (object &rest slot-overrides)

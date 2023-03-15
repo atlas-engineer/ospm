@@ -52,6 +52,10 @@ Example:
   (:documentation "OS package outputs are meaningful mostly for functional
 package managers like Nix or Guix."))
 
+(defmethod print-object ((object os-package-output) stream)
+  (print-unreadable-object (object stream :type t :identity t)
+    (prin1 (name object) stream)))
+
 (defclass* os-generation ()
   ((id 0)
    (current? nil)

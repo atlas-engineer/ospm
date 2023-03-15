@@ -46,3 +46,8 @@ The following is mostly for functional package managers like Nix and Guix:
 - =switch-generation=
 
 More helpers may be available depending on the package manager.
+
+* Change log
+
+- Add print-object methods for =os-package= and =os-package-output=.
+- Initial support for Guix package source inspection (Git references only).

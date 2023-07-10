@@ -49,5 +49,7 @@ More helpers may be available depending on the package manager.
 
 * Change log
 
+** 0.0.2
+
 - Add print-object methods for =os-package= and =os-package-output=.
 - Initial support for Guix package source inspection (Git references only).
